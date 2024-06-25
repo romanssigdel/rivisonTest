@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "410547798523",
+    "project_id": "rivisontest",
+    "storage_bucket": "rivisontest.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:410547798523:android:8960d520d606acb7630b5e",
+        "android_client_info": {
+          "package_name": "com.rivison.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDwUz9YHt32TU4y-yh3uFbvDja2Akqfx5s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
