@@ -32,15 +32,22 @@ class StudentServicesImpl extends StudentServices {
   @override
   Future<ApiResponse> getStudent() async {
     try {
-      await FirebaseFirestore.instance.collection("users").get().then((value) {
-        print(value);
-        studentList
-            .addAll(value.docs.map((e) => Student.fromJson(e.data())).toList());
-        for (var i = 0; i < studentList.length; i++) {
-          studentList[i].id = value.docs[i].id;
-        }
-        print(studentList);
-      });
+      var value = await FirebaseFirestore.instance.collection("users").get();
+      var studentList =
+          value.docs.map((e) => Student.fromJson(e.data())).toList();
+      for (int i = 0; i < studentList.length; i++) {
+        studentList[i].id = value.docs[i].id;
+      }
+      // await FirebaseFirestore.instance.collection("users").get().then((value) {
+      //   // print(value);
+      //   studentList
+      //       .addAll(value.docs.map((e) => Student.fromJson(e.data())).toList());
+      //   for (var i = 0; i < studentList.length; i++) {
+      //     studentList[i].id = value.docs[i].id;
+      //   }
+      //   print(studentList);
+
+      // });
       return ApiResponse(statusUtil: StatusUtil.success, data: studentList);
     } catch (e) {
       return ApiResponse(statusUtil: StatusUtil.error);

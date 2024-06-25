@@ -65,34 +65,12 @@ class _StudentsInfoState extends State<StudentsInfo> {
                                     ),
                                     IconButton(
                                         onPressed: () async {
-                                          await studentProvider.deleteStudent(
+                                          createShowDialog(
+                                              context,
                                               studentProvider
-                                                  .studentlist[index].id!);
-                                          if (studentProvider
-                                                  .getDeleteStudentStatus ==
-                                              StatusUtil.success) {
-                                            Helper.displaySnackbar(
-                                                context, "data deleted");
-                                            Navigator.pushAndRemoveUntil(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      StudentsInfo(),
-                                                ),
-                                                (route) => false);
-                                          } else if (studentProvider
-                                                  .getDeleteStudentStatus ==
-                                              StatusUtil.error) {
-                                            Helper.displaySnackbar(
-                                                context, "deletion failed");
-                                          }
-
-                                          // createShowDialog(
-                                          //     context,
-                                          //     studentProvider
-                                          //         .studentlist[index].id
-                                          //         .toString(),
-                                          //     studentProvider);
+                                                  .studentlist[index].id
+                                                  .toString(),
+                                              studentProvider);
                                         },
                                         icon: Icon(Icons.delete))
                                   ],
