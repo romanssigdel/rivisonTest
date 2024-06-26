@@ -38,16 +38,6 @@ class StudentServicesImpl extends StudentServices {
       for (int i = 0; i < studentList.length; i++) {
         studentList[i].id = value.docs[i].id;
       }
-      // await FirebaseFirestore.instance.collection("users").get().then((value) {
-      //   // print(value);
-      //   studentList
-      //       .addAll(value.docs.map((e) => Student.fromJson(e.data())).toList());
-      //   for (var i = 0; i < studentList.length; i++) {
-      //     studentList[i].id = value.docs[i].id;
-      //   }
-      //   print(studentList);
-
-      // });
       return ApiResponse(statusUtil: StatusUtil.success, data: studentList);
     } catch (e) {
       return ApiResponse(statusUtil: StatusUtil.error);
@@ -84,6 +74,20 @@ class StudentServicesImpl extends StudentServices {
     // TODO: implement deleteUserData
     try {
       await FirebaseFirestore.instance.collection("users").doc(id).delete();
+      return ApiResponse(statusUtil: StatusUtil.success);
+    } catch (e) {
+      return ApiResponse(
+          statusUtil: StatusUtil.error, errorMessage: e.toString());
+    }
+  }
+
+  @override
+  Future<ApiResponse> updateUserData(Student student) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(student.id)
+          .update(student.toJson());
       return ApiResponse(statusUtil: StatusUtil.success);
     } catch (e) {
       return ApiResponse(

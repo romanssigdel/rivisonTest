@@ -20,6 +20,9 @@ String noInternetConnectionStr = "No Internet Available";
 String dataSavedSuccessfulStr = "Data Successfully Saved";
 String dataSavingFailedStr = "Data Saving failed.";
 
+String dataUpdatedSuccessfulStr = "Data Successfully Updated";
+String dataUpdateFailedStr = "Data update failed.";
+
 String signinBannerStr = "Let's Sign in!";
 
 String loginStr = "Login Successful";

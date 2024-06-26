@@ -6,4 +6,5 @@ abstract class StudentServices {
   Future<ApiResponse> getStudent();
   Future<ApiResponse> checkUserData(Student student);
   Future<ApiResponse> deleteUserData(String id);
+  Future<ApiResponse> updateUserData(Student student);
 }

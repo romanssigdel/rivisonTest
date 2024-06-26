@@ -28,8 +28,11 @@ class _SignUpFormState extends State<SignUpForm> {
       provider.setName(widget.student!.name ?? "");
       provider.setPassword(widget.student!.password ?? "");
       provider.setGender(widget.student!.gender ?? "");
-      // provider.setContact(widget.student!.contact ?? "");
-      provider.setConfirmPassword(widget.student!.password ?? "");
+      provider.setContact(widget.student!.contact.toString());
+      provider.setConfirmPassword(widget.student!.confirmPassword ?? "");
+      provider.setAddress(widget.student!.address ?? "");
+      provider.setRole(widget.student!.role ?? "");
+      provider.setId(widget.student!.id ?? "");
     }
     super.initState();
   }
@@ -90,6 +93,7 @@ class _SignUpFormState extends State<SignUpForm> {
                       height: 15,
                     ),
                     DropdownButtonFormField(
+                      value: studentProvider.gender,
                       decoration: InputDecoration(
                           labelText: genderStr,
                           border: OutlineInputBorder(
@@ -157,6 +161,7 @@ class _SignUpFormState extends State<SignUpForm> {
                       ),
                     ),
                     CustomTextFormField(
+                      initialValue: studentProvider.confirmPassword,
                       onChanged: (value) {
                         studentProvider.setConfirmPassword(value);
                       },
@@ -178,28 +183,49 @@ class _SignUpFormState extends State<SignUpForm> {
                     CustomButton(
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
-                          await studentProvider.saveStudent();
-                          if (studentProvider.saveStudentStatus ==
-                              StatusUtil.success) {
-                            await Helper.displaySnackbar(
-                                context, dataSavedSuccessfulStr);
-                            Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => SignInForm(),
-                                ),
-                                (route) => false);
-                          } else if (studentProvider.saveStudentStatus ==
-                              StatusUtil.error) {
-                            await Helper.displaySnackbar(
-                                context, studentProvider.errorMessage!);
+                          if (widget.student!.id == null) {
+                            await studentProvider.saveStudent();
+                            if (studentProvider.saveStudentStatus ==
+                                StatusUtil.success) {
+                              await Helper.displaySnackbar(
+                                  context, dataSavedSuccessfulStr);
+                              Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => SignInForm(),
+                                  ),
+                                  (route) => false);
+                            } else if (studentProvider.saveStudentStatus ==
+                                StatusUtil.error) {
+                              await Helper.displaySnackbar(
+                                  context, studentProvider.errorMessage!);
+                            }
+                          } else if (widget.student!.id != null) {
+                            await studentProvider.updateStudentData();
+                            if (studentProvider.getUpdateStudentStatus ==
+                                StatusUtil.success) {
+                              Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => SignInForm(),
+                                  ),
+                                  (route) => false);
+                              Helper.displaySnackbar(
+                                  context, dataUpdatedSuccessfulStr);
+                            } else if (studentProvider.getUpdateStudentStatus ==
+                                StatusUtil.error) {
+                              Helper.displaySnackbar(
+                                  context, dataUpdateFailedStr);
+                            }
                           }
                         }
                       },
                       backgroundColor: buttonBackgroundClr,
                       foregroundColor: buttonForegroundClr,
-                      child: studentProvider.saveStudentStatus ==
-                              StatusUtil.loading
+                      child: (studentProvider.saveStudentStatus ==
+                                  StatusUtil.loading ||
+                              studentProvider.getUpdateStudentStatus ==
+                                  StatusUtil.loading)
                           ? CircularProgressIndicator()
                           : Text(
                               buttonStr,

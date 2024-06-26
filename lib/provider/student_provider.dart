@@ -32,16 +32,14 @@ class StudentProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // setRole(String value) {
-  //   role = value;
-  // }
-
   setAddress(String value) {
     address = value;
+    notifyListeners();
   }
 
   setContact(String value) {
     contact = value;
+    notifyListeners();
   }
 
   setPassword(String value) {
@@ -51,10 +49,12 @@ class StudentProvider extends ChangeNotifier {
 
   setConfirmPassword(String value) {
     confirmPassword = value;
+    notifyListeners();
   }
 
   setGender(String value) {
     gender = value;
+    notifyListeners();
   }
 
   List<Student> studentlist = [];
@@ -70,11 +70,20 @@ class StudentProvider extends ChangeNotifier {
 
   StatusUtil _getDeleteStudentStatus = StatusUtil.none;
   StatusUtil get getDeleteStudentStatus => _getDeleteStudentStatus;
+
+  StatusUtil _getUpdateStudentStatus = StatusUtil.none;
+  StatusUtil get getUpdateStudentStatus => _getUpdateStudentStatus;
+
   StudentServices studentServices = StudentServicesImpl();
 
   setSaveStudentStatus(StatusUtil status) {
     _saveStudentStaus = status;
     notifyListeners();
+  }
+
+  String? id;
+  setId(value) {
+    id = value;
   }
 
   setGetStudentStatus(StatusUtil status) {
@@ -89,6 +98,11 @@ class StudentProvider extends ChangeNotifier {
 
   setGetDeleteStudentStatus(StatusUtil status) {
     _getDeleteStudentStatus = status;
+    notifyListeners();
+  }
+
+  setUpdateStudentStatus(StatusUtil status) {
+    _getUpdateStudentStatus = status;
     notifyListeners();
   }
 
@@ -158,6 +172,27 @@ class StudentProvider extends ChangeNotifier {
     } else if (apiResponse.statusUtil == StatusUtil.error) {
       errorMessage = apiResponse.errorMessage;
       setGetDeleteStudentStatus(StatusUtil.error);
+    }
+  }
+
+  Future<void> updateStudentData() async {
+    if (_getUpdateStudentStatus != StatusUtil.loading) {
+      setUpdateStudentStatus(StatusUtil.loading);
+    }
+    Student student = Student(
+      id: id,
+        address: address,
+        name: name,
+        gender: gender,
+        confirmPassword: confirmPassword,
+        password: password,
+        contact: int.parse(contact!));
+    ApiResponse apiResponse = await studentServices.updateUserData(student);
+    if (apiResponse.statusUtil == StatusUtil.success) {
+      setUpdateStudentStatus(StatusUtil.success);
+    } else if (apiResponse.statusUtil == StatusUtil.error) {
+      errorMessage = apiResponse.errorMessage;
+      setUpdateStudentStatus(StatusUtil.error);
     }
   }
 
