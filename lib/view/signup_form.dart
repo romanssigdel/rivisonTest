@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_rivison_again/api/status_util.dart';
 import 'package:flutter_rivison_again/custom/custom_button.dart';
 import 'package:flutter_rivison_again/custom/custom_textformfield.dart';
+import 'package:flutter_rivison_again/model/student.dart';
 import 'package:flutter_rivison_again/provider/student_provider.dart';
 import 'package:flutter_rivison_again/view/signin_form.dart';
 import 'package:flutter_rivison_again/view/students_info.dart';
@@ -11,8 +12,27 @@ import 'package:flutter_rivison_again/utils/helper.dart';
 import 'package:flutter_rivison_again/utils/string_const.dart';
 import 'package:provider/provider.dart';
 
-class SignUpForm extends StatelessWidget {
-  const SignUpForm({super.key});
+class SignUpForm extends StatefulWidget {
+  SignUpForm({super.key, this.student});
+  Student? student;
+
+  @override
+  State<SignUpForm> createState() => _SignUpFormState();
+}
+
+class _SignUpFormState extends State<SignUpForm> {
+  @override
+  void initState() {
+    if (widget.student != null) {
+      var provider = Provider.of<StudentProvider>(context, listen: false);
+      provider.setName(widget.student!.name ?? "");
+      provider.setPassword(widget.student!.password ?? "");
+      provider.setGender(widget.student!.gender ?? "");
+      // provider.setContact(widget.student!.contact ?? "");
+      provider.setConfirmPassword(widget.student!.password ?? "");
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +58,7 @@ class SignUpForm extends StatelessWidget {
                       height: 15,
                     ),
                     CustomTextFormField(
+                      initialValue: studentProvider.name,
                       onChanged: (value) {
                         studentProvider.setName(value);
                       },
@@ -53,6 +74,7 @@ class SignUpForm extends StatelessWidget {
                       height: 15,
                     ),
                     CustomTextFormField(
+                      initialValue: studentProvider.address,
                       onChanged: (value) {
                         studentProvider.setAddress(value);
                       },
@@ -92,6 +114,7 @@ class SignUpForm extends StatelessWidget {
                       height: 15,
                     ),
                     CustomTextFormField(
+                      initialValue: studentProvider.contact,
                       onChanged: (value) {
                         studentProvider.setContact(value);
                       },
@@ -109,6 +132,7 @@ class SignUpForm extends StatelessWidget {
                       height: 25,
                     ),
                     CustomTextFormField(
+                      initialValue: studentProvider.password,
                       onChanged: (value) {
                         studentProvider.setPassword(value);
                       },

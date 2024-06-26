@@ -29,6 +29,7 @@ class StudentProvider extends ChangeNotifier {
 
   setName(String value) {
     name = value;
+    notifyListeners();
   }
 
   // setRole(String value) {
@@ -45,6 +46,7 @@ class StudentProvider extends ChangeNotifier {
 
   setPassword(String value) {
     password = value;
+    notifyListeners();
   }
 
   setConfirmPassword(String value) {

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rivison_again/api/status_util.dart';
+import 'package:flutter_rivison_again/model/student.dart';
 import 'package:flutter_rivison_again/provider/student_provider.dart';
 import 'package:flutter_rivison_again/utils/helper.dart';
 import 'package:flutter_rivison_again/view/signin_form.dart';
+import 'package:flutter_rivison_again/view/signup_form.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -36,51 +38,56 @@ class _StudentsInfoState extends State<StudentsInfo> {
     return SafeArea(
       child: Scaffold(
         body: Consumer<StudentProvider>(
-          builder: (context, studentProvider, child) =>
-              studentProvider.getStudentStatus == StatusUtil.loading
-                  ? Center(child: CircularProgressIndicator())
-                  : Column(
-                      children: [
-                        ElevatedButton(
-                            onPressed: () {
-                              logoutUser();
-                            },
-                            child: Text("logout")),
-                        Expanded(
-                          child: ListView.builder(
-                            itemCount: studentProvider.studentlist.length,
-                            itemBuilder: (context, index) {
-                              return Card(
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+          builder: (context, studentProvider, child) => studentProvider
+                      .getStudentStatus ==
+                  StatusUtil.loading
+              ? Center(child: CircularProgressIndicator())
+              : Column(
+                  children: [
+                    ElevatedButton(
+                        onPressed: () {
+                          logoutUser();
+                        },
+                        child: Text("logout")),
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: studentProvider.studentlist.length,
+                        itemBuilder: (context, index) {
+                          return Card(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
                                   children: [
-                                    Column(
-                                      children: [
-                                        Text(studentProvider
-                                            .studentlist[index].name!),
-                                        Text(studentProvider
-                                            .studentlist[index].password!),
-                                      ],
-                                    ),
-                                    IconButton(
-                                        onPressed: () async {
-                                          createShowDialog(
-                                              context,
-                                              studentProvider
-                                                  .studentlist[index].id
-                                                  .toString(),
-                                              studentProvider);
-                                        },
-                                        icon: Icon(Icons.delete))
+                                    Text(studentProvider
+                                        .studentlist[index].name!),
+                                    Text(studentProvider
+                                        .studentlist[index].password!),
                                   ],
                                 ),
-                              );
-                            },
-                          ),
-                        )
-                      ],
-                    ),
+                                IconButton(
+                                    onPressed: () async {
+                                      createShowDialog(
+                                          context,
+                                          studentProvider.studentlist[index].id
+                                              .toString(),
+                                          studentProvider);
+                                    },
+                                    icon: Icon(Icons.delete)),
+                                IconButton(
+                                    onPressed: () {
+                                      editShowDialog(context,
+                                          studentProvider.studentlist[index]);
+                                    },
+                                    icon: Icon(Icons.edit))
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    )
+                  ],
+                ),
         ),
       ),
     );
@@ -124,6 +131,42 @@ class _StudentsInfoState extends State<StudentsInfo> {
                   Helper.displaySnackbar(
                       context, "Error occured while deletion");
                 }
+                // Perform delete operation here
+                // Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text('Yes'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text('No'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  editShowDialog(BuildContext context, Student student) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Edit'),
+          content: Text('Are you sure you want to edit?'),
+          actions: [
+            TextButton(
+              onPressed: () async {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SignUpForm(
+                        student: student,
+                      ),
+                    ),
+                    (route) => false);
+
                 // Perform delete operation here
                 // Navigator.of(context).pop(); // Close the dialog
               },
