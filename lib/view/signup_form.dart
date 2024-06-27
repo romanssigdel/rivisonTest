@@ -183,24 +183,7 @@ class _SignUpFormState extends State<SignUpForm> {
                     CustomButton(
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
-                          if (widget.student!.id == null) {
-                            await studentProvider.saveStudent();
-                            if (studentProvider.saveStudentStatus ==
-                                StatusUtil.success) {
-                              await Helper.displaySnackbar(
-                                  context, dataSavedSuccessfulStr);
-                              Navigator.pushAndRemoveUntil(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => SignInForm(),
-                                  ),
-                                  (route) => false);
-                            } else if (studentProvider.saveStudentStatus ==
-                                StatusUtil.error) {
-                              await Helper.displaySnackbar(
-                                  context, studentProvider.errorMessage!);
-                            }
-                          } else if (widget.student!.id != null) {
+                          if (widget.student?.id != null) {
                             await studentProvider.updateStudentData();
                             if (studentProvider.getUpdateStudentStatus ==
                                 StatusUtil.success) {
@@ -216,6 +199,23 @@ class _SignUpFormState extends State<SignUpForm> {
                                 StatusUtil.error) {
                               Helper.displaySnackbar(
                                   context, dataUpdateFailedStr);
+                            }
+                          } else {
+                            await studentProvider.saveStudent();
+                            if (studentProvider.saveStudentStatus ==
+                                StatusUtil.success) {
+                              await Helper.displaySnackbar(
+                                  context, dataSavedSuccessfulStr);
+                              Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => SignInForm(),
+                                  ),
+                                  (route) => false);
+                            } else if (studentProvider.saveStudentStatus ==
+                                StatusUtil.error) {
+                              await Helper.displaySnackbar(
+                                  context, studentProvider.errorMessage!);
                             }
                           }
                         }

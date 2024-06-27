@@ -180,8 +180,9 @@ class StudentProvider extends ChangeNotifier {
       setUpdateStudentStatus(StatusUtil.loading);
     }
     Student student = Student(
-      id: id,
+        id: id,
         address: address,
+        role: roleTextField?.text,
         name: name,
         gender: gender,
         confirmPassword: confirmPassword,
