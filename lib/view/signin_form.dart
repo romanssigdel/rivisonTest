@@ -98,7 +98,7 @@ class _SignInFormState extends State<SignInForm> {
                             StatusUtil.success) {
                           if (studentProvider.isUserCheckStatus) {
                             Helper.displaySnackbar(context, loginStr);
-                            // studentProvider.saveValueToSharedPreference();
+                            studentProvider.saveValueToSharedPreference();
                             Navigator.pushAndRemoveUntil(
                                 context,
                                 MaterialPageRoute(
