@@ -201,21 +201,27 @@ class _SignUpFormState extends State<SignUpForm> {
                                   context, dataUpdateFailedStr);
                             }
                           } else {
-                            await studentProvider.saveStudent();
-                            if (studentProvider.saveStudentStatus ==
-                                StatusUtil.success) {
-                              await Helper.displaySnackbar(
-                                  context, dataSavedSuccessfulStr);
-                              Navigator.pushAndRemoveUntil(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => SignInForm(),
-                                  ),
-                                  (route) => false);
-                            } else if (studentProvider.saveStudentStatus ==
-                                StatusUtil.error) {
-                              await Helper.displaySnackbar(
-                                  context, studentProvider.errorMessage!);
+                            await studentProvider.checkUserExistsOnSignup();
+                            if (studentProvider.isUserExistOnSignUpStatus) {
+                              Helper.displaySnackbar(
+                                  context, "User already exists");
+                            } else {
+                              await studentProvider.saveStudent();
+                              if (studentProvider.saveStudentStatus ==
+                                  StatusUtil.success) {
+                                await Helper.displaySnackbar(
+                                    context, dataSavedSuccessfulStr);
+                                Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => SignInForm(),
+                                    ),
+                                    (route) => false);
+                              } else if (studentProvider.saveStudentStatus ==
+                                  StatusUtil.error) {
+                                await Helper.displaySnackbar(
+                                    context, studentProvider.errorMessage!);
+                              }
                             }
                           }
                         }

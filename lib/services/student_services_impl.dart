@@ -10,6 +10,7 @@ class StudentServicesImpl extends StudentServices {
   Api api = Api();
   List<Student> studentList = [];
   String? userRole;
+
   @override
   Future<ApiResponse> saveStudent(Student student) async {
     try {
@@ -71,7 +72,6 @@ class StudentServicesImpl extends StudentServices {
 
   @override
   Future<ApiResponse> deleteUserData(String id) async {
-    // TODO: implement deleteUserData
     try {
       await FirebaseFirestore.instance.collection("users").doc(id).delete();
       return ApiResponse(statusUtil: StatusUtil.success);
@@ -92,6 +92,24 @@ class StudentServicesImpl extends StudentServices {
     } catch (e) {
       return ApiResponse(
           statusUtil: StatusUtil.error, errorMessage: e.toString());
+    }
+  }
+
+  @override
+  Future<ApiResponse> checkLoginUserDataOnSignup(Student student) async {
+    bool isUserExistInDatabase = false;
+    try {
+      var value = await FirebaseFirestore.instance
+          .collection("users")
+          .where("name", isEqualTo: student.name)
+          .get();
+      if (value.docs.isNotEmpty) {
+        isUserExistInDatabase = true;
+      }
+      return ApiResponse(
+          statusUtil: StatusUtil.success, data: isUserExistInDatabase);
+    } catch (e) {
+      return ApiResponse(statusUtil: StatusUtil.error,errorMessage: e.toString());
     }
   }
 }

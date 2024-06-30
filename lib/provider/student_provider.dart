@@ -11,6 +11,7 @@ class StudentProvider extends ChangeNotifier {
   TextEditingController? roleTextField;
   String? errorMessage;
   bool isUserCheckStatus = false;
+  bool isUserExistOnSignUpStatus = false;
   Student? studentData;
   bool check = false;
   String? studentId;
@@ -74,6 +75,9 @@ class StudentProvider extends ChangeNotifier {
   StatusUtil _getUpdateStudentStatus = StatusUtil.none;
   StatusUtil get getUpdateStudentStatus => _getUpdateStudentStatus;
 
+  StatusUtil _getCheckUserExistsOnSignup = StatusUtil.none;
+  StatusUtil get getCheckuserExistsOnSignup => _getCheckUserExistsOnSignup;
+
   StudentServices studentServices = StudentServicesImpl();
 
   setSaveStudentStatus(StatusUtil status) {
@@ -103,6 +107,11 @@ class StudentProvider extends ChangeNotifier {
 
   setUpdateStudentStatus(StatusUtil status) {
     _getUpdateStudentStatus = status;
+    notifyListeners();
+  }
+
+  setCheckUserExistsOnSignUp(StatusUtil status) {
+    _getCheckUserExistsOnSignup = status;
     notifyListeners();
   }
 
@@ -194,6 +203,23 @@ class StudentProvider extends ChangeNotifier {
     } else if (apiResponse.statusUtil == StatusUtil.error) {
       errorMessage = apiResponse.errorMessage;
       setUpdateStudentStatus(StatusUtil.error);
+    }
+  }
+
+  Future<void> checkUserExistsOnSignup() async {
+    if (_getCheckUserExistsOnSignup != StatusUtil.loading) {
+      setCheckUserExistsOnSignUp(StatusUtil.loading);
+    }
+    Student student = Student(
+      name: name,
+    );
+    ApiResponse apiResponse =
+        await studentServices.checkLoginUserDataOnSignup(student);
+    if (apiResponse.statusUtil == StatusUtil.success) {
+      isUserExistOnSignUpStatus = apiResponse.data;
+      setCheckUserExistsOnSignUp(StatusUtil.success);
+    } else if (apiResponse.statusUtil == StatusUtil.error) {
+      setCheckUserExistsOnSignUp(StatusUtil.error);
     }
   }
 

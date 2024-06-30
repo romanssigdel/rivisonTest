@@ -7,4 +7,5 @@ abstract class StudentServices {
   Future<ApiResponse> checkUserData(Student student);
   Future<ApiResponse> deleteUserData(String id);
   Future<ApiResponse> updateUserData(Student student);
+  Future<ApiResponse> checkLoginUserDataOnSignup(Student student);
 }
