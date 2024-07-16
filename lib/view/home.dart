@@ -40,7 +40,6 @@ class _HomePageState extends State<HomePage> {
               ? Center(child: CircularProgressIndicator())
               : Column(
                   children: [
-                   
                     Expanded(
                       child: ListView.builder(
                         itemCount: studentProvider.studentlist.length,
@@ -61,6 +60,4 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-
- 
 }

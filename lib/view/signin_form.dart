@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rivison_again/api/status_util.dart';
@@ -11,6 +12,7 @@ import 'package:flutter_rivison_again/utils/color%20_const.dart';
 import 'package:flutter_rivison_again/utils/helper.dart';
 import 'package:flutter_rivison_again/utils/string_const.dart';
 import 'package:flutter_rivison_again/view/user_account.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -150,6 +152,12 @@ class _SignInFormState extends State<SignInForm> {
                           (route) => false);
                     },
                     child: Text("signup"),
+                  ),
+                  CustomButton(
+                    onPressed: () {
+                      googleLogin();
+                    },
+                    child: Image.asset("assets/images/google.png"),
                   )
                 ],
               ),
@@ -158,5 +166,51 @@ class _SignInFormState extends State<SignInForm> {
         ),
       ),
     );
+  }
+
+  googleLogin() async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    User? user;
+
+    final GoogleSignIn googleSignIn = GoogleSignIn();
+
+    final GoogleSignInAccount? googleSignInAccount =
+        await googleSignIn.signIn();
+
+    if (googleSignInAccount != null) {
+      final GoogleSignInAuthentication googleSignInAuthentication =
+          await googleSignInAccount.authentication;
+
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleSignInAuthentication.accessToken,
+        idToken: googleSignInAuthentication.idToken,
+      );
+
+      try {
+        final UserCredential userCredential =
+            await auth.signInWithCredential(credential);
+
+        user = userCredential.user;
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'account-exists-with-different-credential') {
+          // handle the error here
+        } else if (e.code == 'invalid-credential') {
+          // handle the error here
+        }
+      } catch (e) {
+        // handle the error here
+      }
+    }
+
+    print(user);
+    String? token = await user?.getIdToken();
+    if (token!.isNotEmpty) {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) => StudentsInfo(),
+          ),
+          (route) => false);
+    }
   }
 }

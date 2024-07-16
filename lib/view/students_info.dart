@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rivison_again/api/status_util.dart';
 import 'package:flutter_rivison_again/model/student.dart';
@@ -5,6 +7,7 @@ import 'package:flutter_rivison_again/provider/student_provider.dart';
 import 'package:flutter_rivison_again/utils/helper.dart';
 import 'package:flutter_rivison_again/view/signin_form.dart';
 import 'package:flutter_rivison_again/view/signup_form.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -44,6 +47,11 @@ class _StudentsInfoState extends State<StudentsInfo> {
               ? Center(child: CircularProgressIndicator())
               : Column(
                   children: [
+                    ElevatedButton(
+                        onPressed: () {
+                          googleSignOut();
+                        },
+                        child: Text("Google Signout")),
                     ElevatedButton(
                         onPressed: () {
                           logoutUser();
@@ -182,5 +190,26 @@ class _StudentsInfoState extends State<StudentsInfo> {
         );
       },
     );
+  }
+  // import 'package:flutter/foundation.dart' show kIsWeb;
+
+  googleSignOut() async {
+    final GoogleSignIn googleSignIn = GoogleSignIn();
+
+    try {
+      if (!kIsWeb) {
+        await googleSignIn.signOut();
+      }
+      await FirebaseAuth.instance.signOut();
+      Helper.displaySnackbar(context, "Google Signout Successful");
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SignInForm(),
+          ),
+          (route) => false);
+    } catch (e) {
+      Helper.displaySnackbar(context, "Google Signout UnSuccessful");
+    }
   }
 }
