@@ -2,8 +2,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rivison_again/firebase_opt\ions.dart';
 import 'package:flutter_rivison_again/utils/string_const.dart';
+import 'package:flutter_rivison_again/view/forgot_password.dart';
 import 'package:flutter_rivison_again/view/home.dart';
 import 'package:flutter_rivison_again/provider/student_provider.dart';
+import 'package:flutter_rivison_again/view/otp_verification.dart';
 import 'package:flutter_rivison_again/view/signin_form.dart';
 import 'package:flutter_rivison_again/view/signup_form.dart';
 import 'package:flutter_rivison_again/view/students_info.dart';
@@ -52,7 +54,7 @@ class _MyAppState extends State<MyApp> {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: isUserLoggedIn ? StudentsInfo() : SignInForm(),
+        home: isUserLoggedIn ? StudentsInfo() : ForgotPassword(),
       ),
     );
   }
