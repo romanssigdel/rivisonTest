@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rivison_again/api/status_util.dart';
@@ -8,12 +11,12 @@ import 'package:flutter_rivison_again/utils/helper.dart';
 import 'package:flutter_rivison_again/view/signin_form.dart';
 import 'package:flutter_rivison_again/view/signup_form.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class StudentsInfo extends StatefulWidget {
   const StudentsInfo({super.key});
-
   @override
   State<StudentsInfo> createState() => _StudentsInfoState();
 }
@@ -36,6 +39,8 @@ class _StudentsInfoState extends State<StudentsInfo> {
     );
   }
 
+  File file = File("");
+  bool loader = false;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -47,6 +52,19 @@ class _StudentsInfoState extends State<StudentsInfo> {
               ? Center(child: CircularProgressIndicator())
               : Column(
                   children: [
+                    file.path.isEmpty
+                        ? CircleAvatar(
+                            backgroundImage: NetworkImage(
+                                "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTL2T2DS2XGxbYwc3F9t6zxhvzNL1noALlQYvAyvFBb0J8TD1z8_8Tegd8iYnyT8rI3kXzP5Mzm9cWB_HRtb42U1w4h3HlmXxrrRC-a4r4"),
+                          )
+                        : CircleAvatar(backgroundImage: FileImage(file)),
+                    ElevatedButton(
+                        onPressed: () {
+                          pickImage();
+                        },
+                        child: loader == true
+                            ? CircularProgressIndicator()
+                            : Text("Upload Image.")),
                     ElevatedButton(
                         onPressed: () {
                           googleSignOut();
@@ -210,6 +228,33 @@ class _StudentsInfoState extends State<StudentsInfo> {
           (route) => false);
     } catch (e) {
       Helper.displaySnackbar(context, "Google Signout UnSuccessful");
+    }
+  }
+
+  pickImage() async {
+    final ImagePicker picker = ImagePicker();
+// Pick an image.
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    file = File(image!.path);
+    setState(() {
+      loader = true;
+      file;
+    });
+    try {
+      // List<String> fileName = file.path.split('/');
+      String fileName = file.path.split('/').last;
+      var storageReference = FirebaseStorage.instance.ref();
+      var uploadReference = storageReference.child(fileName);
+      await uploadReference.putFile(file);
+      String? downloadUrl = await uploadReference.getDownloadURL();
+      setState(() {
+        loader = false;
+      });
+      print("downloadUrl$downloadUrl");
+    } catch (e) {
+      setState(() {
+        loader = false;
+      });
     }
   }
 }
